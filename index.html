@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Rompecabezas de Células</title>
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0; padding: 0;
+    background: linear-gradient(to bottom, #d0f0c0, #f0f8ff);
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100vh;
+  }
+
+  h1 { margin: 20px; text-align: center; color: #333; text-shadow: 1px 1px 2px #aaa; }
+
+  #contenedor {
+    display: flex; justify-content: center; gap: 50px; margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  #organismos, #seleccion {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    min-width: 200px;
+  }
+
+  .org-btn, .cel-btn {
+    display: block; width: 100%;
+    padding: 10px; margin: 5px 0;
+    font-size: 1rem;
+    border-radius: 10px; border: none; cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    color: white;
+  }
+
+  .org-btn:hover, .cel-btn:hover { transform: scale(1.05); box-shadow: 0 5px #666; }
+
+  /* Colores de organelos distintos */
+  .org-btn:nth-child(odd) { background-color: #FF6F61; }
+  .org-btn:nth-child(even) { background-color: #6B5B95; }
+
+  .animal { background-color: #4CAF50; }
+  .vegetal { background-color: #2196F3; }
+  .ambas { background-color: #FF9800; }
+
+  #resultado {
+    margin-top: 30px;
+    font-size: 2em;
+    font-weight: bold;
+  }
+
+  .correcto { color: green; animation: pop 0.3s ease; }
+  .incorrecto { color: red; animation: shake 0.3s; }
+
+  @keyframes pop { 0%{transform:scale(0);}50%{transform:scale(1.3);}100%{transform:scale(1);} }
+  @keyframes shake { 0%{transform:translateX(0);}25%{transform:translateX(-5px);}50%{transform:translateX(5px);}75%{transform:translateX(-5px);}100%{transform:translateX(0);} }
+</style>
+</head>
+<body>
+
+<h1>Rompecabezas de Células</h1>
+
+<div id="contenedor">
+  <div id="organismos">
+    <h3>Selecciona un organelo</h3>
+  </div>
+
+  <div id="seleccion">
+    <h3>Selecciona la célula</h3>
+    <button class="cel-btn animal" onclick="verificar('animal')">Célula Animal</button>
+    <button class="cel-btn vegetal" onclick="verificar('vegetal')">Célula Vegetal</button>
+    <button class="cel-btn ambas" onclick="verificar('ambas')">Ambas</button>
+  </div>
+</div>
+
+<div id="resultado"></div>
+
+<script>
+  // Lista de organelos y células
+  const organelos = {
+    nucleo:["animal","vegetal"],
+    nucleolo:["animal","vegetal"],
+    mitocondria:["animal","vegetal"],
+    membrana:["animal","vegetal"],
+    citoplasma:["animal","vegetal"],
+    reticulo:["animal","vegetal"],
+    ribosomas:["animal","vegetal"],
+    golgi:["animal","vegetal"],
+    citoesqueleto:["animal","vegetal"],
+    vesiculas:["animal","vegetal"],
+    cloroplasto:["vegetal"],
+    pared:["vegetal"],
+    vacuola:["vegetal"],
+    plasmodesmos:["vegetal"],
+    lisosoma:["animal"],
+    centriolo:["animal"],
+    cilios:["animal"],
+    flagelo:["animal"]
+  };
+
+  const contenedorOrg = document.getElementById("organismos");
+  let organeloSeleccionado = null;
+
+  // Crear botones de organelos con colores alternados
+  let i = 0;
+  for (const org in organelos){
+    const btn = document.createElement("button");
+    btn.textContent = org.charAt(0).toUpperCase() + org.slice(1);
+    btn.className = "org-btn";
+    btn.onclick = () => {
+      organeloSeleccionado = org;
+      document.getElementById("resultado").textContent = `Organelo seleccionado: ${btn.textContent}`;
+    };
+    contenedorOrg.appendChild(btn);
+    i++;
+  }
+
+  function verificar(celula){
+    if(!organeloSeleccionado){
+      alert("Primero selecciona un organelo");
+      return;
+    }
+
+    const correcto = organelos[organeloSeleccionado];
+    const opcionesCorrectas = (correcto.includes("animal") && correcto.includes("vegetal")) ? ["animal","vegetal","ambas"] : correcto;
+
+    const resultadoDiv = document.getElementById("resultado");
+    if(opcionesCorrectas.includes(celula)){
+      resultadoDiv.innerHTML = "<div class='correcto'>✅ Correcto</div>";
+    } else {
+      resultadoDiv.innerHTML = "<div class='incorrecto'>❌ Incorrecto</div>";
+    }
+
+    // Reinicia selección para siguiente intento
+    organeloSeleccionado = null;
+  }
+</script>
+
+</body>
+</html>
